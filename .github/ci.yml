@@ -1,0 +1,10 @@
+name: CI
+jobs:
+  ci:
+    steps:
+      - uses: actions/checkout@v3
+      - run: git fetch --depth=1 origin ${{ github.base_ref }}
+      - id: diff
+        run: echo "::set-output name=changed::$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} --relative ./foo/ | wc -l)"
+      - if: ${{ steps.diff.outputs.changed != '0' }}
+        run: echo "${{steps.diff.outputs.changed}} change(s) detected"
